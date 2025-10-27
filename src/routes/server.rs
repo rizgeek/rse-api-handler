@@ -36,7 +36,7 @@ pub async fn server() {
         .expect("Failed to bind address");
 
     axum::serve(listener, app)
-    .with_graceful_shutdown(shutdown_signal())
+        .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
 }
