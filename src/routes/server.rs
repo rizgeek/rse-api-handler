@@ -1,4 +1,4 @@
-use tokio::net::TcpListener;
+use tokio::{net::TcpListener, signal};
 
 use crate::routes::routes::routes;
 
@@ -10,6 +10,12 @@ pub async fn server() {
         .expect("Failed to bind address");
 
     axum::serve(listener, app)
+    .with_graceful_shutdown(shutdown_signal())
         .await
-        .expect("Server Error");
+        .unwrap();
+}
+
+async fn shutdown_signal() {
+    signal::ctrl_c().await.expect("Failed to install Ctrl+C handler");
+    println!("shutdown signal received. Cleaning up..")
 }
