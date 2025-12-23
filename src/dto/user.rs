@@ -1,23 +1,14 @@
-use serde::{Deserialize, Serialize};
-use validator::{Validate, ValidationError};
-
-
-fn not_blank(value: &str) -> Result<(), ValidationError> {
-    if value.trim().is_empty() {
-        return Err(ValidationError::new("blank"));
-    }
-    Ok(())
-}
-
+use validator::{Validate};
+use serde::{Deserialize, Deserializer ,Serialize};
 
 #[derive(Debug, Deserialize, Serialize, Validate)]
-pub struct User {
-
-    #[validate(custom(function="not_blank"))]
+pub struct UserPayload {
     #[validate(length(min=1))]
+    #[serde(deserialize_with = "trim_string")]
     pub name: String,
 
     #[validate(email)]
+    #[serde(deserialize_with = "trim_string")]
     pub email: String,
 
     #[validate(length(min=8))]
@@ -25,19 +16,14 @@ pub struct User {
 
     #[validate(length(min=8))]
     #[serde(rename="retypePassword")]
-    pub retype_password: String,
+    pub retype_password: String
 }
 
-impl User {
-    pub fn cleanup_payload(mut self) -> Self {
-        self.name = self.name.trim().to_string();
-        self.email = self.email.trim().to_string();
 
-        self
-    }
-
-    pub fn compare_password(&self) -> bool {
-        self.password == self.retype_password
-    }
-
+fn trim_string<'de, D>(deserializer: D) -> Result<String, D::Error> 
+where 
+    D: Deserializer<'de>
+{
+    let s = String::deserialize(deserializer)?;
+    Ok(s.trim().to_string())
 }
