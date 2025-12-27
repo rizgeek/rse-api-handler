@@ -1,9 +1,8 @@
-use crate::{dto::user::UserPayload};
-
 pub enum UserBuildError {
     PasswordMismatch
 }
 
+#[derive(Debug)]
 pub struct User {
     pub name: String,
     pub email: String,
@@ -11,22 +10,11 @@ pub struct User {
 }
 
 impl User {
-    pub fn from_payload(
-        payload: UserPayload
-    ) -> Result<Self, UserBuildError> {
-        
-        if payload.password != payload.retype_password {
-            return Err(UserBuildError::PasswordMismatch);
+    pub fn new(name: String, email: String, password_hash: String) -> Self {
+        Self {
+            name,
+            email,
+            password_hash   
         }
-
-        // let hash = hasher.hash(&payload.password);
-        let hash = "good".to_string();
-        
-        Ok(Self {
-            name: payload.name,
-            email: payload.email,
-            password_hash: hash
-        })
-
     }
 }

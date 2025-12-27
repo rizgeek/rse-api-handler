@@ -1,7 +1,9 @@
-use axum::{routing::get, Router};
-use crate::handler::global;
+use std::sync::Arc;
 
-pub fn global() -> Router {
+use axum::{routing::get, Router};
+use crate::{handler::global, server::app_state::AppState};
+
+pub fn global() -> Router<Arc<AppState>> {
     Router::new()
         .route("/health", get(global::hdl_health))
 }

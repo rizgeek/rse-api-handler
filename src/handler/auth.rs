@@ -1,14 +1,19 @@
-use axum::{Json, http::StatusCode};
+use std::sync::Arc;
+
+use axum::{Json, extract::State, http::StatusCode};
 use validator::Validate;
 
-use crate::{ application::register_user::register, dto::user::UserPayload, helper::api_response::{ApiResponse, ApiResponseWithStatus}};
+use crate::{ application::register_user::register, dto::user::UserPayload, helper::api_response::{ApiResponse, ApiResponseWithStatus}, server::app_state::AppState};
 
-pub async fn hdl_register(Json(payload): Json<UserPayload>) -> ApiResponseWithStatus {	
+pub async fn hdl_register(
+	State(state): State<Arc<AppState>>,
+	Json(payload): Json<UserPayload>
+) -> ApiResponseWithStatus {	
 
 	// check payload
 	match payload.validate() {
 		Ok(_) => {
-			match register(payload) {
+			match register(state, payload) {
 				Ok(message) => ApiResponseWithStatus { 
 					status: StatusCode::CREATED, 
 					response: ApiResponse::Success { message } 

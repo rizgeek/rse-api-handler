@@ -1,7 +1,6 @@
 use std::env;
 use std::sync::Arc;
 
-use axum::Router;
 use dotenv::dotenv;
 use tokio::{net::TcpListener, signal};
 
@@ -31,9 +30,7 @@ pub async fn server() {
 
     let state: Arc<AppState> = build_state();
 
-    let app= Router::new()
-        .with_state(state)
-        .merge(routes()); 
+    let app= routes().with_state(state);
 
     let port: String = env::var("PORT").expect("PORT must be set in .env");
     let host: String = env::var("HOST").expect("HOST must be set in .env");
