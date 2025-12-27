@@ -1,0 +1,18 @@
+services:
+  redis:
+    container_name: rse_redis
+    image: redis:latest
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./settings/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - 1111:6379 #publish port 1111
+    networks:
+      - rse_redis_net
+    restart: unless-stopped
+    
+
+networks:
+  rse_redis_net:
+    driver: bridge
+    
