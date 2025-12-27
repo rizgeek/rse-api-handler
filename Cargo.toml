@@ -12,3 +12,5 @@ dotenv = "0.15.0"
 tokio = {version = "1.48.0", features = ["full"]}
 validator = {version = "0.20.0", features = ["derive"]}
 bcrypt = "0.17.1"
+redis = "1.0.2"
+r2d2_redis = "0.14.0"

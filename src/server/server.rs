@@ -1,7 +1,6 @@
 use std::env;
 use std::sync::Arc;
 
-use dotenv::dotenv;
 use tokio::{net::TcpListener, signal};
 
 use crate::routes::routes::routes;
@@ -26,8 +25,6 @@ impl ApiConfig {
 
 
 pub async fn server() {
-    dotenv().ok();
-
     let state: Arc<AppState> = build_state();
 
     let app= routes().with_state(state);
