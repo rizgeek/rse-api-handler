@@ -1,10 +1,14 @@
 use std::env;
+use std::sync::Arc;
 
+use axum::Router;
 use dotenv::dotenv;
 use tokio::{net::TcpListener, signal};
 
 use crate::routes::routes::routes;
 use crate::helper::notif;
+use crate::server::app_state::AppState;
+use crate::server::build_state::build_state;
 
 struct ApiConfig {
     port: String,
@@ -25,17 +29,21 @@ impl ApiConfig {
 pub async fn server() {
     dotenv().ok();
 
-    let app = routes().await;
+    let state: Arc<AppState> = build_state();
 
-    let port = env::var("PORT").expect("PORT must be set in .env");
-    let host = env::var("HOST").expect("HOST must be set in .env");
+    let app= Router::new()
+        .with_state(state)
+        .merge(routes()); 
+
+    let port: String = env::var("PORT").expect("PORT must be set in .env");
+    let host: String = env::var("HOST").expect("HOST must be set in .env");
     
     notif::info("starting server host {?}",Some(host.as_str()));
     notif::info("opening port {?}",Some(port.as_str()));
 
-    let bind = ApiConfig::new(port, host).bind();
+    let bind: String = ApiConfig::new(port, host).bind();
     
-    let listener = TcpListener::bind(bind)
+    let listener: TcpListener = TcpListener::bind(bind)
         .await
         .expect("Failed to bind address");
 

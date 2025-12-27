@@ -1,4 +1,4 @@
-use crate::{application::ports::PasswordHasher, dto::user::UserPayload};
+use crate::{dto::user::UserPayload};
 
 pub enum UserBuildError {
     PasswordMismatch
@@ -12,7 +12,7 @@ pub struct User {
 
 impl User {
     pub fn from_payload(
-        payload: UserPayload, hasher: &impl PasswordHasher
+        payload: UserPayload
     ) -> Result<Self, UserBuildError> {
         
         if payload.password != payload.retype_password {

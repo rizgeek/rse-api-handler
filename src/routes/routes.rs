@@ -1,13 +1,11 @@
 use axum::Router;
-use crate::routes::{r_global, r_auth};
+use crate::routes::{r_auth, r_global};
 
-pub async fn routes() -> Router {
-    let global = r_global::global().await;
-    let auth = r_auth::auth().await;
+pub  fn routes() -> Router {
+    let global = r_global::global();
+    let auth = r_auth::auth();
 
-    let app: Router = Router::new()
-        .nest("/global", global)
-        .nest("/auth", auth);
-
-    app
+    Router::new()
+    .nest("/auth", auth)
+    .nest("/global", global)
 }
