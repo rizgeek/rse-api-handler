@@ -6,7 +6,7 @@ services:
     volumes:
       - ./settings/redis/redis.conf:/usr/local/etc/redis/redis.conf
     ports:
-      - 1111:6379 #publish port 1111
+      - ${REDIS_HOST_PORT}:${REDIS_CONTAINER_PORT}
     networks:
       - rse_redis_net
     restart: unless-stopped
